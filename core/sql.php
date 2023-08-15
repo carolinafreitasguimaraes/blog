@@ -21,13 +21,13 @@ function update(string $entidade, array $dados, array $criterio = []) : string
         $set[] = "{$campo} = {$dado}";
     }
 
-    $instrucao .= 'SET' . implode(', ', $set);
+    $instrucao .= ' SET ' . implode(', ', $set);
 
     if(!empty($criterio)){
-        $instrucao .= 'WHERE';
+        $instrucao .= ' WHERE ';
 
         foreach($criterio as $expressao){
-            $instrucao .= '' . implode(' ', $expressao);
+            $instrucao .= ' ' . implode(' ', $expressao);
         }
     }
 
