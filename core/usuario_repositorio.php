@@ -40,7 +40,7 @@ switch($acao){
         ];
 
         atualiza(
-            'usuario';
+            'usuario',
             $dados,
             $criterio
         );
@@ -116,5 +116,5 @@ switch($acao){
             exit;
             break;
 }
-header('Location: ../index.php');
+//header('Location: ../index.php');
 ?>
