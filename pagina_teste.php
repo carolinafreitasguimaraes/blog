@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <head>
+ <head>
         <title>Post | Projeto para Web com PHP</title>
         <link rel="stylesheet"
               href="lib/bootstrap-4.2.1-dist/css/bootstrap.min.css">
@@ -29,7 +29,7 @@
                         include 'includes/rodape.php';
                     ?>
                 </div>
-            </div>
+         </div>
         </div>
         <script src="lib/bootstrap-4.2.1-dist/js/bootstrap.min.js"></script>
     </body>
