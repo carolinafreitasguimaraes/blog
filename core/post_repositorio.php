@@ -21,8 +21,8 @@ switch($acao){
             $dados = [
                 'titulo'        =>$titulo,
                 'texto'         => $texto,
-                'data_postagem' => $data_postagem $hora_postagem,
-                'usuario-id'    => _SESSION['login']['usuario']['id']
+                'data_postagem' => "$data_postagem $hora_postagem",
+                'usuario-id'    => $_SESSION['login']['usuario']['id']
             ];
 
             insere(
