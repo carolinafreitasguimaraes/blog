@@ -1,18 +1,15 @@
 <?php
     require_once '../core/sql.php';
-
     $id = 1;
-    $nome = 'carol';
-    $email = 'carolina.guimaraes@aluno.edu.bri.br';
-    $senha = '123mudar';
-    $dados = ['nome'  => $nome,
-              'email' => $email,
-              'senha' => $senha];
-
+    $nome = 'Carolina';
+    $email = 'carolina.guimaraes@ifsp.edu.br';
+    $senha = 'carol123';
+    $dados = ['nome' => $nome,
+                'email' => $email,
+                'senha' => $senha];
     $entidade = 'usuario';
     $criterio = [['id', '=', $id]];
     $campos = ['id', 'nome', 'email'];
-    
     print_r($dados);
     echo '<br>';
     print_r($campos);
@@ -22,17 +19,17 @@
 
     //Teste geração INSERT
     $instrucao = insert($entidade, $dados);
-    echo $instrucao.'<BR>';
+    echo $instrucao.'<br>';
 
     //Teste geração UPDATE
     $instrucao = update($entidade, $dados, $criterio);
-    echo $instrucao.'<BR>';
+    echo $instrucao.'<br>';
 
     //Teste geração SELECT
-    $instrucao = select($entidade, $campos, $criterio);
-    echo $instrucao.'<BR>';
+    $instrucao = select($entidade, $dados, $criterio);
+    echo $instrucao.'<br>';
 
-     //Teste geração DELETE
-     $instrucao = delete($entidade, $criterio);
-     echo $instrucao.'<BR>';
+    //Teste geração UPDATE
+    $instrucao = delete($entidade, $criterio);
+    echo $instrucao.'<br>';
 ?>

@@ -1,49 +1,45 @@
 <?php
+// Inclui os arquivos necessários com funções e configurações.
+require_once '../includes/funcoes.php';
+require_once '../core/conexao_mysql.php';
+require_once '../core/sql.php';
+require_once '../core/mysql.php';
 
-/*
-CREATE TABLE avaliacao (
-    id int NOT NULL AUTO_INCREMENT, 
-    nota int NOT NULL,
-    comentario varchar(255) NOT NULL,
-    usuario_id int NOT NULL,
-    post_id int NOT NULL,
-    data_criacao datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    CONSTRAINT fk_avaliacao_usuario FOREIGN KEY (usuario_id) REFERENCES usuario (id), CONSTRAINT fk_avaliacao_post FOREIGN KEY (post_id) REFERENCES post (id)
-);
-*/
-    require_once '../includes/funcoes.php';
-    require_once '../core/conexao_mysql.php';
-    require_once '../core/sql.php';
-    require_once '../core/mysql.php';
+// Chama a função insert_teste para inserir um registro de avaliação.
+insert_teste ('10', 'excelente', '1', '3');
 
-    insert_teste ('Que meu', 2, 1, 2, 'now()'); 
-    buscar_teste(44);
-    update_teste (44, 'Não ficou legal', 34, 1, 2, 'now()'); 
-    //delete_teste(2);
-    /*
-    update_teste (2, 'murilo', 'silva@gmail.com'); 
-    buscar_teste();*/
+// Chama a função buscar_teste para buscar e exibir todos os registros de avaliação.
+buscar_teste();
 
-    //Teste inserção banco de dados
-    function insert_teste ($comment, $nota, $usuario_id, $post_id, $data_criacao): void{
-        $dados = ['comentario' => $comment, 'nota' => $nota, 'usuario_id' => $usuario_id, 'post_id' => $post_id, 'data_criacao' => $data_criacao]; insere ('avaliacao', $dados);
-    }
+// Chama a função update_teste para atualizar um registro de avaliação com ID 1.
+update_teste(1, '2', 'péssimo', '1', '3');
 
-    // Teste select banco de dados 
-    function buscar_teste($id): void{
-        $usuarios = buscar ('avaliacao', ['*'], [['id', '=', $id]], ''); print_r($usuarios);
-    }
-    
-    // Teste update banco de dados
-    function update_teste ($id, $comment, $nota, $usuario_id, $post_id, $data_criacao): void{
+// Chama novamente a função buscar_teste para verificar as alterações após a atualização.
+buscar_teste();
 
-        $dados = ['comentario' => $comment, 'nota' => $nota, 'usuario_id' => $usuario_id, 'post_id' => $post_id, 'data_criacao' => $data_criacao]; 
-        $criterio = [['id', '=', $id]];
-        atualiza ('avaliacao', $dados, $criterio);
-    }
-   
-    function delete_teste($id): void{
-        $usuarios = deleta ('avaliacao', [['id', '=', $id]], ''); print_r($usuarios);
-    }
+// Define a função insert_teste para inserir um registro de avaliação.
+function insert_teste($nota, $comentario, $usuario_id, $post_id): void{
+    // Cria um array associativo com os dados a serem inseridos.
+    $dados = ['nota' => $nota, 'comentario' => $comentario, 'usuario_id' => $usuario_id, 'post_id' => $post_id]; 
+    // Chama a função 'insere' para inserir os dados na tabela 'avaliacao'.
+    insere('avaliacao', $dados);
+}
+
+// Define a função buscar_teste para buscar registros de avaliação e exibi-los.
+function buscar_teste(): void{
+    // Realiza a busca na tabela 'avaliacao' e seleciona os campos desejados.
+    $avaliacoes = buscar('avaliacao', ['id', 'nota', 'comentario', 'usuario_id', 'post_id'], [], '');
+    // Exibe os resultados da busca.
+    print_r($avaliacoes);
+}
+
+// Define a função update_teste para atualizar um registro de avaliação com base no ID.
+function update_teste($id, $nota, $comentario, $usuario_id, $post_id): void{
+    // Cria um array associativo com os novos dados.
+    $dados = ['nota' => $nota, 'comentario' => $comentario, 'usuario_id' => $usuario_id, 'post_id' => $post_id];
+    // Define o critério de atualização com base no ID.
+    $criterio = [['id', '=', $id]];
+    // Chama a função 'atualiza' para atualizar os dados na tabela 'avaliacao'.
+    atualiza('avaliacao', $dados, $criterio);
+}
 ?>

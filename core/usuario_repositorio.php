@@ -1,141 +1,128 @@
 <?php
-    session_start();
-    require_once '../includes/funcoes.php';
-    require_once 'conexao_mysql.php';
-    require_once 'sql.php';
-    require_once 'mysql.php';
-    $salt = 'ifsp';
+session_start(); // Inicia a sessão
 
-    foreach ($_POST as $indice => $dado) {
-        $$indice = limparDados($dado);
-    }
-    foreach ($_GET as $indice => $dado) {
-        $$indice = limparDados($dado);
-    }
+// Inclui os arquivos necessários
+require_once '../includes/funcoes.php';
+require_once 'conexao_mysql.php';
+require_once 'sql.php';
+require_once 'mysql.php';
 
-    switch ($acao) {
+$salt = '$ifsp'; // Define um valor de sal para criptografia
 
-        case 'insert':
-            $dados = [
-                'nome' => $nome,
-                'email' => $email,
-                'senha' => crypt ($senha, $salt)
-            ];
-        
-            insere (
-                'usuario',
-                $dados
-            );
-    
-            break;
-        
-        case 'update':
+// Limpa os dados POST e GET para evitar injeção de SQL
+foreach($_POST as $indice => $dado){
+    $$indice = limparDados($dado);
+}
 
-            $id = (int)$id;
+foreach($_GET as $indice => $dado){
+    $$indice = limparDados($dado);
+}
 
-            $dados = [
-                'nome'=> $nome,
-                'email' => $email
-            ];
+switch($acao){
+    case 'insert':
+        // Define os dados a serem inseridos
+        $dados = [
+            'nome' => $nome,
+            'email' => $email,
+            'senha' => crypt($senha, $salt) // Criptografa a senha antes de inserir
+        ];
 
-            $criterio = [
-                ['id', '=', $id]
-            ];
-            
-            
-            atualiza (
-                'usuario',
-                $dados,
-                $criterio
-            );
+        // Chama a função 'insere' para inserir um novo usuário
+        insere('usuario', $dados);
 
-            break;
+        break;
 
-        case 'login':
+    case 'update':
+        $id = (int)$id; // Converte o ID para inteiro
+        // Define os dados a serem atualizados
+        $dados = [
+            'nome' => $nome,
+            'email' => $email
+        ];
 
-            $criterio = [
-                ['email', '=', $email],
-                ['AND', 'ativo', '=', 1]
-            ];
+        $criterio = [
+            ['id', '=', $id] // Critério de atualização: ID igual ao ID fornecido
+        ];
 
-            $retorno = buscar (
-                'usuario',
-                ['id', 'nome', 'email', 'senha', 'adm'],
-                $criterio
-            )
+        // Chama a função 'atualiza' para atualizar os dados do usuário
+        atualiza('usuario', $dados, $criterio);
 
-            if (count($retorno) > 0) {
-                if (crypt($senha, $salt) == $retorno[0]['senha']){
+        break;
 
-                   
-                    $_SESSION['login']['usuario'] = $retorno[0];
+    case 'login':
+        $criterio = [
+            ['email', '=', $email], // Critério de pesquisa: email igual ao email fornecido
+            ['AND', 'ativo', '=', 1] // E ativo igual a 1 (ativo)
+        ];
 
+        // Realiza a busca na tabela 'usuario' com os critérios especificados
+        $retorno = buscar(
+            'usuario',
+            ['id', 'nome', 'email', 'senha', 'adm'],
+            $criterio
+        );
 
-                    if (!empty($_SESSION['url_retorno'])) {
-                        header('Location: ' . $_SESSION ['url_retorno']);
-                        $_SESSION['url_retorno'] = '';
-                        exit;
-                    }
-                } 
+        // Verifica se algum usuário foi encontrado
+        if (count($retorno) > 0) {
+            // Compara a senha criptografada no banco de dados com a senha fornecida
+            if (crypt($senha, $salt) == $retorno[0]['senha']) {
+                $_SESSION['login']['usuario'] = $retorno[0]; // Define os dados do usuário na sessão
+
+                // Redireciona para a URL de retorno, se houver
+                if (!empty($_SESSION['url_retorno'])) {
+                    header('Location:' . $_SESSION['url_retorno']);
+                    $_SESSION['url_retorno'] = '';
+                    exit;
+                }
             }
-                
-            break;
+        }
 
-        case 'logout':
-            session_destroy();
-            break;
+        break;
 
-        case 'status':
+    case 'logout':
+        session_destroy(); // Destroi a sessão (faz logout)
+        break;
 
-            $id = (int)$id;
-            $valor = (int)$valor;
+    case 'status':
+        $id = (int)$id; // Converte o ID e o valor para inteiros
+        $valor = (int)$valor;
 
-            $dados = [
-                'ativo' => $valor
-            ];
+        // Define os dados de atualização (ativo)
+        $dados = [
+            'ativo' => $valor
+        ];
 
-            $criterio = [
-                ['id', '=', $id]
-            ];
-            
-            
-            
-            atualiza (
-                'usuario',
-                $dados,
-                $criterio
-            );
+        $criterio = [
+            ['id', '=', $id] // Critério de atualização: ID igual ao ID fornecido
+        ];
 
-            header('Location: ../usuarios.php');
-            exit;
-            break;
+        // Chama a função 'atualiza' para atualizar o status do usuário
+        atualiza('usuario', $dados, $criterio);
 
-        case 'adm':
+        header('Location: ../usuarios.php'); // Redireciona para a página de usuários
+        exit;
+        break;
 
-            $id = (int) $id;
-            $valor = (int) $valor;
-            
-            $dados = [ 
-                'adm' => $valor
-            ];
-            
+    case 'adm':
+        $id = (int)$id; // Converte o ID e o valor para inteiros
+        $valor = (int)$valor;
 
-            $criterio = [
-                ['id', '=', $id] 
-            ];
-            
-            
-            atualiza(
-                'usuario',
-                $dados,
-                $criterio
-            );
+        // Define os dados de atualização (administrador)
+        $dados = [
+            'adm' => $valor
+        ];
 
-            
+        $criterio = [
+           ['id', '=', $id] // Critério de atualização: ID igual ao ID fornecido
+        ];
 
-            header('Location: ../usuarios.php');
-            exit;
-            break;          
-    }
+        // Chama a função 'atualiza' para atualizar o status de administrador do usuário
+        atualiza('usuario', $dados, $criterio);
 
-header('Location: ../index.php');                 
+        header('Location: ../usuarios.php'); // Redireciona para a página de usuários
+        exit;
+        break;
+}
+
+header('Location: ../index.php'); // Redireciona de volta para a página inicial
+?>
